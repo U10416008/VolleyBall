@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/actionToolbar"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/rl"
+            android:background="@drawable/volleyball_court"
+            >
+
+        <ImageView
+            android:id="@+id/red1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationX="40dp"
+            android:translationY="175dp"
+            android:src="@drawable/user_red"
+            />
+        <ImageView
+            android:id="@+id/blue1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:translationX="275dp"
+            android:translationY="175dp"
+            android:src="@drawable/user_blue"
+            />
+        <ImageView
+            android:id="@+id/black1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:translationX="300dp"
+            android:translationY="125dp"
+            android:src="@drawable/user_black"
+            />
+        <ImageView
+            android:id="@+id/black2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:translationX="75dp"
+            android:translationY="300dp"
+            android:src="@drawable/user_black"
+            />
+        <ImageView
+            android:id="@+id/blue2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:translationX="175dp"
+            android:translationY="200dp"
+            android:src="@drawable/user_blue"
+            />
+        <ImageView
+            android:id="@+id/red2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:translationX="250dp"
+            android:translationY="300dp"
+            android:src="@drawable/user_red"
+            />
+        </RelativeLayout>
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/next"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="24dp"
+        android:layout_marginRight="24dp"
+        app:elevation="30dp"
+        app:backgroundTint="#fff000"
+        app:pressedTranslationZ="20dp"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/refresh"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="80dp"
+        android:layout_marginLeft="24dp"
+        app:fabSize="mini"
+        app:elevation="20dp"
+        app:backgroundTint="#fff000"
+        app:pressedTranslationZ="20dp"/>
+</android.support.design.widget.CoordinatorLayout>

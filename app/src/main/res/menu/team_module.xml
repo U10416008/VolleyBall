@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/turn"
+        android:orderInCategory="100"
+        android:icon="@drawable/turn"
+        android:title="@string/user"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/user"
+        android:orderInCategory="100"
+        android:icon="@drawable/menu_user"
+        android:title="@string/user"
+        app:showAsAction="always" >
+        <menu>
+
+            <item
+                android:id="@+id/red"
+                android:orderInCategory="100"
+                android:title="@string/player_location_weapon"
+                android:icon="@drawable/user_red"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/black"
+                android:orderInCategory="100"
+                android:title="@string/player_location_rase"
+                android:icon="@drawable/user_black"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/blue"
+                android:orderInCategory="100"
+                android:title="@string/player_location_middle"
+                android:icon="@drawable/user_blue"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/yellow"
+                android:orderInCategory="100"
+                android:title="@string/player_location_free"
+                android:icon="@drawable/free"
+                app:showAsAction="always" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/mode"
+        android:orderInCategory="100"
+        android:title="@string/mode"
+        app:showAsAction="always"
+        android:icon="@drawable/mode">
+
+
+        <menu>
+
+        <item
+            android:id="@+id/double_rase"
+            android:orderInCategory="100"
+            android:title="@string/action_settings"
+            app:showAsAction="always" />
+        <item
+            android:id="@+id/single_rase"
+            android:orderInCategory="100"
+            android:title="@string/action_settings2"
+            app:showAsAction="always" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">VolleyBall</string>
+    <string name="mode">隊形模式</string>
+    <string name="user">隊員</string>
+    <string name="teamname_settings">隊名</string>
+    <string name="exit">離開</string>
+    <string name="action_settings">雙舉</string>
+    <string name="action_settings2">單舉</string>
+    <string name="playername_settings">名字</string>
+    <string name="player_location_settings">位置</string>
+    <string name="player_location_free">自由</string>
+    <string name="player_location_weapon">大砲</string>
+    <string name="player_location_middle">攔中</string>
+    <string name="player_location_rase">舉球</string>
+    <string name="player_height_settings">高度</string>
+    <string name="player_missRate_settings">失誤率</string>
+    <string name="volleyball">隊伍資訊</string>
+    <string name="schedule">排球記事</string>
+    <string name="record">比賽紀錄</string>
+    <string name="module">隊形模擬</string>
+    <string name="attack">攻擊</string>
+    <string name="defense">防守</string>
+    <string name="add">新增</string>
+    <string name="back">返回</string>
+    <string name="please_select_mode">請選擇模式</string>
+    <string name="turn">往右輪</string>
+
+    <string-array name="location">
+        <item>自由</item>
+        <item>大砲</item>
+        <item>攔中</item>
+        <item>舉球</item>
+    </string-array>
+</resources>
