@@ -24,7 +24,7 @@
     <string name="back">返回</string>
     <string name="please_select_mode">請選擇模式</string>
     <string name="turn">往右輪</string>
-
+    <string name="calendar">日曆</string>
     <string-array name="location">
         <item>自由</item>
         <item>大砲</item>

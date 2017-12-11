@@ -11,7 +11,7 @@
     <item
         android:id="@+id/user"
         android:orderInCategory="100"
-        android:icon="@drawable/menu_user"
+        android:icon="@drawable/ic_user_menu"
         android:title="@string/user"
         app:showAsAction="always" >
         <menu>
@@ -20,25 +20,25 @@
                 android:id="@+id/red"
                 android:orderInCategory="100"
                 android:title="@string/player_location_weapon"
-                android:icon="@drawable/user_red"
+                android:icon="@drawable/ic_user_red"
                 app:showAsAction="always" />
             <item
                 android:id="@+id/black"
                 android:orderInCategory="100"
                 android:title="@string/player_location_rase"
-                android:icon="@drawable/user_black"
+                android:icon="@drawable/ic_user_black"
                 app:showAsAction="always" />
             <item
                 android:id="@+id/blue"
                 android:orderInCategory="100"
                 android:title="@string/player_location_middle"
-                android:icon="@drawable/user_blue"
+                android:icon="@drawable/ic_user_blue"
                 app:showAsAction="always" />
             <item
                 android:id="@+id/yellow"
                 android:orderInCategory="100"
                 android:title="@string/player_location_free"
-                android:icon="@drawable/free"
+                android:icon="@drawable/ic_user_yellow"
                 app:showAsAction="always" />
         </menu>
     </item>
