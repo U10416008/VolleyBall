@@ -33,7 +33,6 @@ import java.util.ArrayList;
 public class TeamerInfo extends Fragment {
     private Spinner spinner;
     private ArrayList<String> list = new ArrayList<>();
-    private ArrayList<String> teamer = new ArrayList<>();
     ArrayAdapter<CharSequence> locadapter;
     ArrayAdapter<String> adapter;
     private View rootView;

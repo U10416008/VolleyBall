@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="title">#0abab5</color>
     <color name="tabtext">#CDFF0000</color>
+    <color name="black">#000000</color>
 </resources>

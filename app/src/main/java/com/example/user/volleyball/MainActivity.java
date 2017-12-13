@@ -5,6 +5,7 @@ package com.example.user.volleyball;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -33,7 +34,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private Toolbar mToolbar;
+    private CollapsingToolbarLayout mToolbar;
     private Pager adapter;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
     @Override
@@ -83,16 +84,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("position:",""+position);
                 switch (position) {
                     case 0:
-                        mToolbar.setTitle(R.string.volleyball);
+                        mToolbar.setTitle(getString(R.string.volleyball));
                         break;
                     case 1:
-                        mToolbar.setTitle(R.string.schedule);
+                        mToolbar.setTitle(getString(R.string.schedule));
                         break;
                     case 2:
-                        mToolbar.setTitle(R.string.record);
+                        mToolbar.setTitle(getString(R.string.record));
                         break;
                     case 3:
-                        mToolbar.setTitle(R.string.module);
+                        mToolbar.setTitle(getString(R.string.module));
                         break;
                     default:
                         break;
@@ -131,11 +132,13 @@ public class MainActivity extends AppCompatActivity {
         return true;// super.onTouchEvent(event);
     }
     public void initTool(){
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(R.string.volleyball);
-        mToolbar.setNavigationIcon(R.drawable.ic_action_name);
-        mToolbar.inflateMenu(R.menu.menu_main);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        mToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        Toolbar cToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(getString(R.string.volleyball));
+        cToolbar.setNavigationIcon(R.drawable.ic_action_name);
+        cToolbar.inflateMenu(R.menu.menu_main);
+        cToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
