@@ -20,10 +20,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 /**
@@ -179,9 +182,10 @@ public class TeamerInfo extends Fragment {
         try{
 
                 FileOutputStream outputfile = getContext().openFileOutput("team.txt", Context.MODE_APPEND);
-                outputfile.write(team.getBytes());
-                outputfile.write("\n".getBytes());
-                outputfile.close();
+                DataOutputStream out = new DataOutputStream(outputfile);
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
+                bw.write(team+"\n");
+                bw.close();
                 Log.d("Success", team);
                 Toast.makeText(getContext(), "Save" + team, Toast.LENGTH_SHORT).show();
 

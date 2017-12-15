@@ -2,33 +2,22 @@ package com.example.user.volleyball;
 
 
 
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,15 +25,20 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private CollapsingToolbarLayout mToolbar;
     private Pager adapter;
+    public AppBarLayout abl;
+    private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        abl =(AppBarLayout)findViewById(R.id.abl) ;
+        height = abl.getHeight();
         initTool();
         home();
         //Adding onTabSelectedListener to swipe views
     }
+
     public void home(){
         fr_list.add(new TeamerInfo());
         fr_list.add(new Schedule());
@@ -85,15 +79,18 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         mToolbar.setTitle(getString(R.string.volleyball));
+
                         break;
                     case 1:
                         mToolbar.setTitle(getString(R.string.schedule));
+                        //abl.setExpanded(false);
                         break;
                     case 2:
                         mToolbar.setTitle(getString(R.string.record));
                         break;
                     case 3:
                         mToolbar.setTitle(getString(R.string.module));
+                        abl.setExpanded(false,true);
                         break;
                     default:
                         break;
@@ -138,9 +135,21 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setTitle(getString(R.string.volleyball));
         cToolbar.setNavigationIcon(R.drawable.ic_action_name);
         cToolbar.inflateMenu(R.menu.menu_main);
+        cToolbar.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) abl.getLayoutParams();
+
+                abl.setLayoutParams(params);
+                abl.setExpanded(true);
+            }
+        });
         cToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+
+
                 switch (item.getItemId()){
 
                     case R.id.exit:

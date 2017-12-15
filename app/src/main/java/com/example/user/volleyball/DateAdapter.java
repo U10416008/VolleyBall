@@ -30,8 +30,8 @@ public class DateAdapter extends RecyclerView.Adapter{
              view.setLayoutParams(lp);
         return new DateViewHolder(view);
     }
-    private ArrayList<String> list;
-    public DateAdapter(ArrayList<String> list) {
+    private ArrayList<DateSchedule> list;
+    public DateAdapter(ArrayList<DateSchedule> list) {
         this.list = list;
     }
     @Override
@@ -39,9 +39,10 @@ public class DateAdapter extends RecyclerView.Adapter{
         Log.d("TAG", "onBindViewHolder, i: " + position + ", viewHolder: " + viewHolder);
         DateViewHolder holder = (DateViewHolder) viewHolder;
         holder.position = position;
-        String person = list.get(position);
-        holder.nameTv.setText(person);
-        holder.ageTv.setText(person);
+        String date = list.get(position).getDate();
+        holder.nameTv.setText(date);
+        String schedule = list.get(position).getSchedule();
+        holder.ageTv.setText(schedule);
     }
 
     @Override
