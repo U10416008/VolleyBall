@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-public class DateAdapter extends RecyclerView.Adapter{
+public class DateAdapter extends RecyclerView.Adapter implements View.OnClickListener{
     public static interface OnRecyclerViewListener {
-        void onItemClick(int position);
+        void onItemClick(View v ,int position);
         boolean onItemLongClick(int position);
     }
     private OnRecyclerViewListener onRecyclerViewListener;
@@ -28,6 +28,7 @@ public class DateAdapter extends RecyclerView.Adapter{
              View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.date_list_layout, null);
              LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
              view.setLayoutParams(lp);
+             view.setOnClickListener(this);
         return new DateViewHolder(view);
     }
     private ArrayList<DateSchedule> list;
@@ -41,7 +42,7 @@ public class DateAdapter extends RecyclerView.Adapter{
         holder.position = position;
         String date = list.get(position).getDate();
         holder.nameTv.setText(date);
-        String schedule = list.get(position).getSchedule();
+        String schedule = list.get(position).getScheduleString();
         holder.ageTv.setText(schedule);
     }
 
@@ -49,6 +50,15 @@ public class DateAdapter extends RecyclerView.Adapter{
     public int getItemCount() {
         return list.size();
     }
+    @Override
+    public void onClick(View v) {
+        if (onRecyclerViewListener != null) {
+            //注意这里使用getTag方法获取position
+            onRecyclerViewListener.onItemClick(v,(int)v.getTag());
+
+        }
+    }
+
 
     class DateViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         public View rootView;
@@ -64,19 +74,21 @@ public class DateAdapter extends RecyclerView.Adapter{
             rootView.setOnLongClickListener(this);
         }
 
+
         @Override
         public void onClick(View v) {
             if (null != onRecyclerViewListener) {
-                onRecyclerViewListener.onItemClick(position);
+                onRecyclerViewListener.onItemClick(v , position);
             }
         }
                 @Override
         public boolean onLongClick(View v) {
-                        if(null != onRecyclerViewListener){
-                                return onRecyclerViewListener.onItemLongClick(position);
-                            }
-                         return false;
-                   }
+            if(null != onRecyclerViewListener){
+                return onRecyclerViewListener.onItemLongClick(position);
+            }
+            return false;
+        }
+
     }
 
 

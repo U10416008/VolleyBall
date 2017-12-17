@@ -22,6 +22,8 @@
     <string name="defense">防守</string>
     <string name="add">新增</string>
     <string name="back">返回</string>
+    <string name="update">更改</string>
+    <string name="delete">刪除</string>
     <string name="please_select_mode">請選擇模式</string>
     <string name="turn">往右輪</string>
     <string name="calendar">日曆</string>

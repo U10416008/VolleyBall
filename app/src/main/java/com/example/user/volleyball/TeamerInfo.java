@@ -1,6 +1,7 @@
 package com.example.user.volleyball;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -34,6 +35,9 @@ import java.util.ArrayList;
  */
 
 public class TeamerInfo extends Fragment {
+    private SharedPreferences settings;
+    private static final String LAST_POSITION = "POSITION";
+
     private Spinner spinner;
     private ArrayList<String> list = new ArrayList<>();
     ArrayAdapter<CharSequence> locadapter;
@@ -50,6 +54,16 @@ public class TeamerInfo extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onStop() {
+        settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
+        settings.edit()
+                .putInt(LAST_POSITION, spinner.getSelectedItemPosition())
+                .commit();
+        super.onStop();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,8 +78,12 @@ public class TeamerInfo extends Fragment {
     }
     public void initSpinner(){
         spinner = (Spinner)rootView.findViewById(R.id.spTeamName);
+        settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
+        int position = settings.getInt(LAST_POSITION,0);
+
         read();
         list.add("新增");
+
 
         locadapter = ArrayAdapter.createFromResource(this.getContext(),
                 R.array.location, android.R.layout.simple_list_item_1);
@@ -76,6 +94,7 @@ public class TeamerInfo extends Fragment {
         adapter.setDropDownViewResource(
                 android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(position);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override

@@ -1,7 +1,9 @@
 package com.example.user.volleyball;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,6 +34,7 @@ import android.widget.Toast;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,10 +53,12 @@ public class Schedule extends Fragment {
     private AppBarLayout appBarLayout;
     View rootView;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", /*Locale.getDefault()*/Locale.ENGLISH);
-    private String minHour = "6 : 0 PM";
-    private String scheduleType = "";
-    private String noteS = "";
-
+    private int hour = 6;
+    private int min = 0;
+    private String AM_PM = "PM";
+    private int scheduleType = 0;
+    public final int ADD = 1;
+    public final int UPDATE =2;
     private boolean isExpanded = false;
     public static Schedule newInstance() {
 
@@ -67,13 +72,7 @@ public class Schedule extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.schedule, container, false);
-        recyclerView = rootView.findViewById(R.id.recycle);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new DateAdapter(datelist);
-
-        recyclerView.setAdapter(adapter);
+        initRecy();
         appBarLayout = rootView.findViewById(R.id.app_bar_layout);
         initCal();
         setHasOptionsMenu(true);
@@ -81,70 +80,33 @@ public class Schedule extends Fragment {
         initFab();
         return rootView;
     }
+    public void initRecy(){
+        recyclerView = rootView.findViewById(R.id.recycle);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new DateAdapter(datelist);
+        recyclerView.setAdapter(adapter);
+        adapter.setOnRecyclerViewListener(new DateAdapter.OnRecyclerViewListener(){
+            @Override
+            public void onItemClick(View view , int position){
+                DateSchedule clickDS = datelist.get(position);
+                updateSchedule(clickDS,UPDATE);
+                Toast.makeText(getContext(),clickDS.getNote()+clickDS.getSchedule()+clickDS.getHour() + ":" + clickDS.getMin() +clickDS.getAM_PM() ,Toast.LENGTH_LONG ).show();
+            }
+
+            @Override
+            public boolean onItemLongClick(int position) {
+                return false;
+            }
+        });
+    }
     public void initFab() {
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LayoutInflater inflater = getLayoutInflater();
-                final View mView = inflater.inflate(R.layout.schedule_add, null);
-                final TextView date = (TextView) mView.findViewById(R.id.tvDate);
-                final TimePicker time = (TimePicker) mView.findViewById(R.id.timePicker);
-                final RadioGroup rGroup = (RadioGroup)mView.findViewById(R.id.radioGroup);
-                final EditText note = (EditText)mView.findViewById(R.id.etNote) ;
-                date.setText(getSubtitle());
+                updateSchedule(null, ADD);
 
-                time.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-                    @Override
-                    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                        String AM_PM ;
-                        if(hourOfDay < 12) {
-                            AM_PM = " AM";
-
-                        } else {
-                            AM_PM = " PM";
-                            hourOfDay=hourOfDay-12;
-                        }
-                        minHour = String.valueOf(hourOfDay) + " : " + String.valueOf(minute )+ AM_PM;
-
-                    }
-
-                });
-
-                scheduleType = getString(R.string.race);
-                rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                     @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                        switch (checkedId) {
-                            case R.id.radioRace:
-                                scheduleType = getString(R.string.race);
-                                break;
-                            case R.id.radioPratice:
-                                scheduleType = getString(R.string.pratice);
-                                break;
-                            case R.id.radioOther:
-                                scheduleType = getString(R.string.other);
-                                break;
-
-                        }
-                    }
-                });
-                noteS = note.getText().toString();
-                new AlertDialog.Builder(getContext())
-                        .setView(mView)
-                        .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                if(!date.getText().toString().equals("")&&!minHour.equals("")&&!scheduleType.equals("")) {
-                                    String d = date.getText().toString() + " " + minHour;
-                                    DateSchedule DS = new DateSchedule(d, scheduleType,noteS);
-                                    updateList(DS);
-                                }
-
-
-                            }
-                        })
-                        .setNegativeButton(R.string.back, null).show();
             }
         });
     }
@@ -186,6 +148,96 @@ public class Schedule extends Fragment {
         });
 
     }
+    public void updateSchedule(final DateSchedule cDS,final int type){
+
+        LayoutInflater inflater = getLayoutInflater();
+        final View mView = inflater.inflate(R.layout.schedule_add, null);
+        final TextView date = (TextView) mView.findViewById(R.id.tvDate);
+        final TimePicker time = (TimePicker) mView.findViewById(R.id.timePicker);
+        final RadioGroup rGroup = (RadioGroup)mView.findViewById(R.id.radioGroup);
+        final EditText note = (EditText)mView.findViewById(R.id.etNote) ;
+        if(type == UPDATE) {
+            date.setText(cDS.getDate());
+            time.setHour(cDS.get24Hour());
+            time.setMinute(cDS.getMin());
+            rGroup.check(cDS.getSchedule());
+            note.setText(cDS.getNote());
+        }
+        else
+            date.setText(getSubtitle());
+
+        time.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+
+                if(hourOfDay < 12) {
+                    AM_PM = " AM";
+
+                } else {
+                    AM_PM = " PM";
+                    hourOfDay=hourOfDay-12;
+                }
+                hour = hourOfDay;
+                min = minute;
+            }
+
+        });
+
+        scheduleType = R.id.radioRace;
+        rGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.radioRace:
+                        scheduleType = R.id.radioRace;
+                        break;
+                    case R.id.radioPratice:
+                        scheduleType = R.id.radioPratice;
+                        break;
+                    case R.id.radioOther:
+                        scheduleType = R.id.radioOther;
+                        break;
+
+                }
+
+            }
+        });
+
+        new AlertDialog.Builder(getContext())
+                .setView(mView)
+                .setPositiveButton(type == ADD?R.string.add :R.string.update, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        if(!date.getText().toString().equals("")) {
+                            if(type == ADD) {
+                                Log.d("ScID",""+scheduleType);
+                                DateSchedule DS = new DateSchedule(getContext(),date.getText().toString(),
+                                        scheduleType, note.getText().toString(), hour, min, AM_PM);
+                                updateList(DS);
+                            }else{
+                                cDS.setAM_PM(AM_PM);
+                                cDS.setMin(min);
+                                cDS.setHour(hour);
+                                cDS.setNote(note.getText().toString());
+                                cDS.setSchedule(scheduleType);
+                            }
+
+                        }
+
+
+
+                    }
+                })
+                .setNegativeButton(type == ADD? R.string.back:R.string.delete, type == ADD? null:new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        datelist.remove(cDS);
+                        adapter.notifyDataSetChanged();
+                    }
+                }).show();
+    }
+
     public void updateList(DateSchedule date){
         datelist.add(date);
         adapter.notifyDataSetChanged();
@@ -212,6 +264,7 @@ public class Schedule extends Fragment {
             datePickerTextView.setText(subtitle);
         }
     }
+    @NonNull
     private String getSubtitle() {
         TextView datePickerTextView = rootView.findViewById(R.id.date_picker_text_view);
         if (datePickerTextView != null) {
