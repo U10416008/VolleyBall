@@ -2,6 +2,7 @@ package com.example.user.volleyball;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -69,6 +70,7 @@ public class Team extends Fragment {
                 rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });*/
+
         setHasOptionsMenu(true);
         initTool();
         initImage();

@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -37,11 +38,13 @@ import java.util.ArrayList;
 public class TeamerInfo extends Fragment {
     private SharedPreferences settings;
     private static final String LAST_POSITION = "POSITION";
-
+    private final int PLAYER_ADD = 1;
+    private final int PLAYER_INFO = 2;
     private Spinner spinner;
     private ArrayList<String> list = new ArrayList<>();
     ArrayAdapter<CharSequence> locadapter;
     ArrayAdapter<String> adapter;
+    private String name = "";
     private View rootView;
     private MySql helper;
     private ListView lv;
@@ -69,6 +72,7 @@ public class TeamerInfo extends Fragment {
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.teamer_info, container, false);
         helper = new MySql(getContext(), "volleyball.db", null, 1);
+
         initSpinner();
         initList();
         if(list.size()>1) {
@@ -112,13 +116,15 @@ public class TeamerInfo extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface arg0, int arg1) {
                                     EditText setTv = (EditText) mView.findViewById(R.id.etname);
+
                                     String team = setTv.getText().toString();
                                     if(!fileContain(team)) {
                                         list.add(list.size() - 1, team);
                                         save(team);
                                         adapter.notifyDataSetChanged();
                                         spinner.setSelection(list.size() - 2);
-                                        refresh();
+                                        if(cursorAdapter != null)
+                                            refresh();
                                     }
                                 }
                             })
@@ -160,42 +166,78 @@ public class TeamerInfo extends Fragment {
     }
     public void initList(){
         lv = (ListView)rootView.findViewById(R.id.teamerInfo);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                playerInfo(PLAYER_INFO,((Cursor)cursorAdapter.getItem(position)));
+
+            }
+        });
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                LayoutInflater inflater = getLayoutInflater();
-                final View mView = inflater.inflate(R.layout.player_name, null);
-                final EditText playname = (EditText)mView.findViewById(R.id.etplayername);
-                final EditText playHei = (EditText)mView.findViewById(R.id.etheight);
-                final EditText playMiss = (EditText)mView.findViewById(R.id.etmiss);
-                final Spinner spLoc = (Spinner) mView.findViewById(R.id.etlocation);
-                spLoc.setAdapter(locadapter);
-                new AlertDialog.Builder(getContext())
-                        .setView(mView)
-                        .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                Log.d("team",spinner.getSelectedItem().toString());
-                                if(!playname.getText().toString().equals("") &&
-                                        !playHei.getText().toString().equals("") ) {
-                                    helper.add(playname.getText().toString(),
-                                            spinner.getSelectedItem().toString(),
-                                            spLoc.getSelectedItemPosition(),
-                                            Double.valueOf(playHei.getText().toString()),
-                                            ((playMiss.getText().toString().equals(""))? 50.0:Double.valueOf(playMiss.getText().toString())));
-                                    if (cursorAdapter == null) {
-                                        createList();
-                                    } else {
-                                        refresh();
-                                    }
-                                }else{
-                                    Toast.makeText(getContext(), "Please Completed Name And Height", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.back, null).show();
+                playerInfo(PLAYER_ADD,null);
             }
         });
+    }
+    public void playerInfo(final int type ,Cursor cursor){
+        LayoutInflater inflater = getLayoutInflater();
+        final View mView = inflater.inflate(R.layout.player_name, null);
+        final EditText playname = (EditText)mView.findViewById(R.id.etplayername);
+        final EditText playHei = (EditText)mView.findViewById(R.id.etheight);
+        final EditText playMiss = (EditText)mView.findViewById(R.id.etmiss);
+        final Spinner spLoc = (Spinner) mView.findViewById(R.id.etlocation);
+        final TextView tvTeam = (TextView)mView.findViewById(R.id.tvteamName);
+        tvTeam.setText(spinner.getSelectedItem().toString());
+        spLoc.setAdapter(locadapter);
+        if(type == PLAYER_INFO){
+
+
+            playname.setText(cursor.getString(1));
+            playHei.setText(String.valueOf(cursor.getDouble(4)));
+            playMiss.setText(String.valueOf(cursor.getDouble(5)));
+            spLoc.setSelection(cursor.getInt(6));
+            Log.d("LOC",""+cursor.getInt(6));
+        }
+
+        new AlertDialog.Builder(getContext())
+                .setView(mView)
+                .setPositiveButton(type == PLAYER_ADD ? R.string.add:R.string.update, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+
+
+                            if(!playname.getText().toString().equals("") &&
+                                    !playHei.getText().toString().equals("") ) {
+                                if(type == PLAYER_ADD)
+                                 helper.add(playname.getText().toString(),
+                                        spinner.getSelectedItem().toString(),
+                                        spLoc.getSelectedItemPosition(),
+                                        Double.valueOf(playHei.getText().toString()),
+                                        ((playMiss.getText().toString().equals(""))? 50.0:Double.valueOf(playMiss.getText().toString())));
+                                else
+                                        helper.update(playname.getText().toString(),
+                                                spinner.getSelectedItem().toString(),
+                                                spLoc.getSelectedItemPosition(),
+                                                Double.valueOf(playHei.getText().toString()),
+                                                ((playMiss.getText().toString().equals(""))? 50.0:Double.valueOf(playMiss.getText().toString())));
+                                if (cursorAdapter == null) {
+                                    createList();
+                                } else {
+                                        refresh();
+                                }
+                            }else{
+                                Toast.makeText(getContext(), "Please Completed Name And Height", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                })
+                .setNegativeButton(type == PLAYER_ADD ? R.string.back : R.string.delete, type == PLAYER_ADD ?null:new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        helper.delete(playname.getText().toString());
+                        refresh();
+                    }
+                }).show();
     }
     public void save(String team){
         try{

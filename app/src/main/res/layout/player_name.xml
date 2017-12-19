@@ -2,14 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFBB33"
+
+        >
     <ImageView
         android:src="@drawable/ic_action_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="64dp"
         android:scaleType="center"
-        android:background="#FFFFBB33"
+        android:textAlignment="textStart"
         android:contentDescription="@string/app_name"
+        android:paddingLeft="@android:dimen/notification_large_icon_width"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@android:dimen/app_icon_size"
+        android:layout_gravity="center_vertical"
+        android:textSize="24dp"
+        android:id="@+id/tvteamName"
+        />
+    </LinearLayout>
     <EditText
         android:id="@+id/etplayername"
         android:inputType="textEmailAddress"

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/recordturn"
+        android:orderInCategory="100"
+        android:icon="@drawable/turn"
+        android:title="@string/user"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/recorduser"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_user_menu"
+        android:title="@string/user"
+        app:showAsAction="always" >
+        <menu>
+
+            <item
+                android:id="@+id/red1"
+                android:orderInCategory="100"
+                android:title="@string/player_location_weapon"
+                android:icon="@drawable/ic_user_red"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/black1"
+                android:orderInCategory="100"
+                android:title="@string/player_location_rase"
+                android:icon="@drawable/ic_user_black"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/blue1"
+                android:orderInCategory="100"
+                android:title="@string/player_location_middle"
+                android:icon="@drawable/ic_user_blue"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/yellow1"
+                android:orderInCategory="100"
+                android:title="@string/player_location_free"
+                android:icon="@drawable/ic_user_yellow"
+                app:showAsAction="always" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/startType"
+        android:orderInCategory="100"
+        android:title="@string/start"
+        app:showAsAction="never" >
+        <menu>
+
+            <item
+                android:id="@+id/three"
+                android:orderInCategory="100"
+                android:title="@string/three"
+                app:showAsAction="always" />
+            <item
+                android:id="@+id/five"
+                android:orderInCategory="100"
+                android:title="@string/five"
+                app:showAsAction="always" />
+
+        </menu>
+    </item>
+
+</menu>

@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/radioGroup"
+
         android:padding="10dp">
         <RadioButton
             android:layout_width="wrap_content"

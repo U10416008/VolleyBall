@@ -2,6 +2,7 @@ package com.example.user.volleyball;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -60,6 +61,7 @@ public class Schedule extends Fragment {
     public final int ADD = 1;
     public final int UPDATE =2;
     private boolean isExpanded = false;
+    private RemindSql remindSql;
     public static Schedule newInstance() {
 
         Schedule fragment = new Schedule();
@@ -72,13 +74,27 @@ public class Schedule extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.schedule, container, false);
+        remindSql = new RemindSql(getContext(), "date_alert.db", null, 1);
         initRecy();
         appBarLayout = rootView.findViewById(R.id.app_bar_layout);
         initCal();
         setHasOptionsMenu(true);
         initTool();
         initFab();
+        initList();
         return rootView;
+    }
+    public void initList(){
+        String select = "SELECT * FROM alert";
+        Cursor cursor= remindSql.getReadableDatabase().rawQuery(select,null);
+        if (cursor!=null && cursor.moveToFirst()) {
+            do {
+                DateSchedule DS = new DateSchedule(getContext(),cursor.getString(1),cursor.getInt(2),
+                        cursor.getString(6),cursor.getInt(4),cursor.getInt(3),cursor.getString(5));
+                updateList(DS);
+
+            } while (cursor.moveToNext());
+        }
     }
     public void initRecy(){
         recyclerView = rootView.findViewById(R.id.recycle);
@@ -142,7 +158,7 @@ public class Schedule extends Fragment {
                 ViewCompat.animate(arrow).rotation(rotation).start();
                 isExpanded = !isExpanded;
                 appBarLayout.setExpanded(isExpanded, true);
-                ((MainActivity)getActivity()).abl.setExpanded(!isExpanded,true);
+
             }
 
         });
@@ -214,6 +230,8 @@ public class Schedule extends Fragment {
                                 Log.d("ScID",""+scheduleType);
                                 DateSchedule DS = new DateSchedule(getContext(),date.getText().toString(),
                                         scheduleType, note.getText().toString(), hour, min, AM_PM);
+                                remindSql.add(date.getText().toString(),scheduleType,
+                                        min,hour,AM_PM,note.getText().toString());
                                 updateList(DS);
                             }else{
                                 cDS.setAM_PM(AM_PM);
@@ -221,6 +239,8 @@ public class Schedule extends Fragment {
                                 cDS.setHour(hour);
                                 cDS.setNote(note.getText().toString());
                                 cDS.setSchedule(scheduleType);
+                                remindSql.update(date.getText().toString(),scheduleType,
+                                        min,hour,AM_PM,note.getText().toString());
                             }
 
                         }
@@ -232,6 +252,7 @@ public class Schedule extends Fragment {
                 .setNegativeButton(type == ADD? R.string.back:R.string.delete, type == ADD? null:new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
+                        remindSql.delete(cDS.getDate(),cDS.getSchedule());
                         datelist.remove(cDS);
                         adapter.notifyDataSetChanged();
                     }

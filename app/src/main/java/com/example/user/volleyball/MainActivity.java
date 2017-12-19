@@ -2,6 +2,7 @@ package com.example.user.volleyball;
 
 
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -20,20 +21,24 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Navigation_Activity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
-    private CollapsingToolbarLayout mToolbar;
+    private Toolbar mToolbar;
     private Pager adapter;
-    public AppBarLayout abl;
+    int ORIGINAL_SCREEN_ORIENTATION  = getRequestedOrientation();
+    //public AppBarLayout abl;
     private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        abl =(AppBarLayout)findViewById(R.id.abl) ;
-        height = abl.getHeight();
+
+        setUpToolBar();
+        CurrentMenuItem = 0;
+        //abl =(AppBarLayout)findViewById(R.id.abl) ;
+        //height = abl.getHeight();
         initTool();
         home();
         //Adding onTabSelectedListener to swipe views
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setTab(){
         TabLayout.Tab volleyTab = tabLayout.getTabAt(0); // Create a new Tab names
-        volleyTab.setText(R.string.volleyball); // set the Text for the first Tab
+        volleyTab.setText(R.string.volleyballInfo); // set the Text for the first Tab
         volleyTab.setIcon(R.drawable.volleyball);
 
         TabLayout.Tab schTab = tabLayout.getTabAt(1);; // Create a new Tab names
@@ -78,19 +83,22 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("position:",""+position);
                 switch (position) {
                     case 0:
-                        mToolbar.setTitle(getString(R.string.volleyball));
-
+                        mToolbar.setTitle(getString(R.string.volleyballInfo));
+                        setRequestedOrientation(ORIGINAL_SCREEN_ORIENTATION);
                         break;
                     case 1:
                         mToolbar.setTitle(getString(R.string.schedule));
                         //abl.setExpanded(false);
+                        setRequestedOrientation(ORIGINAL_SCREEN_ORIENTATION);
                         break;
                     case 2:
                         mToolbar.setTitle(getString(R.string.record));
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                         break;
                     case 3:
                         mToolbar.setTitle(getString(R.string.module));
-                        abl.setExpanded(false,true);
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        //abl.setExpanded(false,true);
                         break;
                     default:
                         break;
@@ -129,36 +137,13 @@ public class MainActivity extends AppCompatActivity {
         return true;// super.onTouchEvent(event);
     }
     public void initTool(){
-        mToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        //mToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 
-        Toolbar cToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(getString(R.string.volleyball));
-        cToolbar.setNavigationIcon(R.drawable.ic_action_name);
-        cToolbar.inflateMenu(R.menu.menu_main);
-        cToolbar.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View view) {
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) abl.getLayoutParams();
-
-                abl.setLayoutParams(params);
-                abl.setExpanded(true);
-            }
-        });
-        cToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitle(getString(R.string.volleyballInfo));
+        mToolbar.setNavigationIcon(R.drawable.ic_action_name);
 
 
-                switch (item.getItemId()){
-
-                    case R.id.exit:
-                        Toast.makeText(MainActivity.this, "Exit is clicked!", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
     public class Pager extends FragmentStatePagerAdapter {

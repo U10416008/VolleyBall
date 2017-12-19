@@ -30,7 +30,9 @@ public class MySql extends SQLiteOpenHelper {
                 "team VARCHAR, " +
                 "location VARCHAR, " +
                 "height REAL, " +
-                "miss REAL)");
+                "miss REAL," +
+                "locationint REAL)");
+
     }
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
@@ -63,6 +65,7 @@ public class MySql extends SQLiteOpenHelper {
         values.put("location", loc);
         values.put("height", height);
         values.put("miss", miss);
+        values.put("locationint",location);
         long id = db.insert("main.person", null, values);
         Log.d("ADD", id + "");
 
@@ -77,13 +80,33 @@ public class MySql extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("team", team);
-        values.put("location", location);
+        String loc= "";
+        switch (location){
+            case LOCATION_FREE:
+                loc = context.getString(R.string.player_location_free);
+                break;
+            case LOCATION_WEAPON:
+                loc = context.getString(R.string.player_location_weapon);
+                break;
+            case LOCATION_MIDDLE:
+                loc = context.getString(R.string.player_location_middle);
+                break;
+            case LOCATION_RASE:
+                loc = context.getString(R.string.player_location_rase);
+                break;
+
+            default:
+                break;
+        }
+        values.put("location", loc);
+        values.put("locationint", location);
         values.put("height", height);
         values.put("miss", miss);
 
         db.update("main.person", values, "name = ?", new String[]{name});
-        Log.d("AFTER", String.valueOf(cursor.getInt(2)));
-        Log.d("UPDATE", name);
+
+        db.close();
+
         return true;
     }
     public boolean contain(String name){

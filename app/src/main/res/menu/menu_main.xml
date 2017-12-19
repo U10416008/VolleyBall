@@ -2,10 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.user.testadd.MainActivity">
+    <group android:checkableBehavior="single">
+    <item
+        android:id="@+id/volleyball"
+        android:orderInCategory="100"
+        android:title="@string/volleyball"
+        android:icon="@drawable/volleyball"
+        />
+    <item
+        android:id="@+id/detail"
+        android:orderInCategory="100"
+        android:title="@string/detail"
+        android:icon="@drawable/details"
+        />
+    <item
+        android:id="@+id/edit"
+        android:orderInCategory="100"
+        android:title="@string/edit"
+        android:icon="@drawable/edit"
+        />
     <item
         android:id="@+id/exit"
         android:orderInCategory="100"
         android:title="@string/exit"
-        app:showAsAction="never"
+        android:icon="@drawable/exit"
         />
+    </group>
+
 </menu>

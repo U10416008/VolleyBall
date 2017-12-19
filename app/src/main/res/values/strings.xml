@@ -4,6 +4,9 @@
     <string name="user">隊員</string>
     <string name="teamname_settings">隊名</string>
     <string name="exit">離開</string>
+    <string name="edit">編輯</string>
+    <string name="detail">詳細</string>
+    <string name="volleyball">排球</string>
     <string name="action_settings">雙舉</string>
     <string name="action_settings2">單舉</string>
     <string name="playername_settings">名字</string>
@@ -14,7 +17,7 @@
     <string name="player_location_rase">舉球</string>
     <string name="player_height_settings">高度</string>
     <string name="player_missRate_settings">失誤率</string>
-    <string name="volleyball">隊伍資訊</string>
+    <string name="volleyballInfo">隊伍資訊</string>
     <string name="schedule">排球記事</string>
     <string name="record">比賽紀錄</string>
     <string name="module">隊形模擬</string>
@@ -34,6 +37,16 @@
     <string name="race">比賽</string>
     <string name="other">其他</string>
     <string name="complete">請選擇一個按鈕</string>
+    <string name="open_navigation">打開NV</string>
+    <string name="close_navigation">關閉</string>
+    <string name="start">開始</string>
+    <string name="three">三局</string>
+    <string name="five">五局</string>
+    <string name="first">第一局</string>
+    <string name="second">第二局</string>
+    <string name="third">第三局</string>
+    <string name="forth">第四局</string>
+    <string name="fifth">第五局</string>
     <string-array name="location">
         <item>自由</item>
         <item>大砲</item>
