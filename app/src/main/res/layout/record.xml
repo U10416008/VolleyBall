@@ -65,59 +65,6 @@
                 />
         </RelativeLayout>
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabLeftRedo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:src="@drawable/refresh"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="80dp"
-        app:fabSize="mini"
-        app:elevation="20dp"
-        app:backgroundTint="#fff000"
-        app:pressedTranslationZ="20dp"/>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabLeftPoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:src="@drawable/plus"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginLeft="24dp"
-        app:elevation="30dp"
-        app:backgroundTint="#E0E0E0"
-        app:pressedTranslationZ="20dp"/>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabRightRedo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/refresh"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="80dp"
-        app:fabSize="mini"
-        app:elevation="20dp"
-        app:backgroundTint="#fff000"
-        app:pressedTranslationZ="20dp"/>
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabRightPoint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/plus"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginRight="24dp"
-        app:elevation="30dp"
-        app:backgroundTint="#E0E0E0"
-        app:pressedTranslationZ="20dp"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

@@ -43,6 +43,14 @@ public class Team extends Fragment {
     float valueXarray[][];
     float valueYarray[][] ;
     boolean selectMode = false;
+    boolean onCreate = false;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
+
     public static Team newInstance() {
 
         Team fragment = new Team();
@@ -55,7 +63,8 @@ public class Team extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.team, container, false);
+        if(!onCreate) {
+            rootView = inflater.inflate(R.layout.team, container, false);
         /*rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -71,10 +80,12 @@ public class Team extends Fragment {
             }
         });*/
 
-        setHasOptionsMenu(true);
-        initTool();
-        initImage();
-        initFab();
+            setHasOptionsMenu(true);
+            initTool();
+            initImage();
+            initFab();
+            onCreate = true;
+        }
         return rootView;
     }
     public void initXY(float screenWidth , float screenHeight){

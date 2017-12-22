@@ -49,6 +49,7 @@ public class TeamerInfo extends Fragment {
     private MySql helper;
     private ListView lv;
     private SimpleCursorAdapter cursorAdapter;
+    private boolean onCreate = false;
     public static TeamerInfo newInstance() {
 
         TeamerInfo fragment = new TeamerInfo();
@@ -56,6 +57,14 @@ public class TeamerInfo extends Fragment {
         // For this to work this method should only be called once ever for each instanceSection.
         fragment.setArguments(args);
         return fragment;
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        read();
+        list.add("新增");
+        setRetainInstance(true);
     }
 
     @Override
@@ -70,13 +79,16 @@ public class TeamerInfo extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.teamer_info, container, false);
-        helper = new MySql(getContext(), "volleyball.db", null, 1);
+        if(!onCreate) {
+            rootView = inflater.inflate(R.layout.teamer_info, container, false);
+            helper = new MySql(getContext(), "volleyball.db", null, 1);
 
-        initSpinner();
-        initList();
-        if(list.size()>1) {
-            createList();
+            initSpinner();
+            initList();
+            if (list.size() > 1) {
+                createList();
+            }
+            onCreate = true;
         }
         return rootView;
     }
@@ -85,8 +97,7 @@ public class TeamerInfo extends Fragment {
         settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
         int position = settings.getInt(LAST_POSITION,0);
 
-        read();
-        list.add("新增");
+
 
 
         locadapter = ArrayAdapter.createFromResource(this.getContext(),

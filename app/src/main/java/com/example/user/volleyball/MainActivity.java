@@ -27,6 +27,8 @@ public class MainActivity extends Navigation_Activity {
     private Toolbar mToolbar;
     private Pager adapter;
     int ORIGINAL_SCREEN_ORIENTATION  = getRequestedOrientation();
+    private static final String TAG_WORKER_FRAGMENT = "Record";
+    Record mRecord ;
     //public AppBarLayout abl;
     private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
@@ -34,6 +36,7 @@ public class MainActivity extends Navigation_Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         setUpToolBar();
         CurrentMenuItem = 0;
@@ -45,19 +48,27 @@ public class MainActivity extends Navigation_Activity {
     }
 
     public void home(){
-        fr_list.add(new TeamerInfo());
-        fr_list.add(new Schedule());
-        fr_list.add(new Record());
-        fr_list.add(new Team());
+        fr_list.add(TeamerInfo.newInstance());
+        fr_list.add(Schedule.newInstance());
+        fr_list.add(Record.newInstance());
+        fr_list.add(Team.newInstance());
         tabLayout = (TabLayout) findViewById(R.id.tabs); // get the reference of TabLayout
         viewPager = (ViewPager) findViewById(R.id.pager);
         //Creating our pager adapter
+        ;
+
         adapter = new Pager(getSupportFragmentManager(), 4);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         setTab();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
     }
     public void setTab(){
         TabLayout.Tab volleyTab = tabLayout.getTabAt(0); // Create a new Tab names
@@ -164,7 +175,7 @@ public class MainActivity extends Navigation_Activity {
         public Fragment getItem(int position) {
             //Returning the current tabs
             Log.d("GetPosition",""+position);
-            switch (position) {
+            /*switch (position) {
                 case 0:
                     // First Fragment of First Tab
                     return TeamerInfo.newInstance();
@@ -175,13 +186,18 @@ public class MainActivity extends Navigation_Activity {
 
                 case 2:
                     // First Fragment of Third Tab
-                    return Record.newInstance();
+                    mRecord = (Record) fm.findFragmentByTag("Record");
+                    if (mRecord == null) {
+                        mRecord = Record.newInstance();
+                    }
+                    return mRecord;
                 case 3:
                     // First Fragment of Third Tab
                     return Team.newInstance();
                 default:
                     return null;
-            }
+            }*/
+            return fr_list.get(position);
 
         }
 

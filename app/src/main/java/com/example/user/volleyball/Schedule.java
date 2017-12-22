@@ -62,6 +62,7 @@ public class Schedule extends Fragment {
     public final int UPDATE =2;
     private boolean isExpanded = false;
     private RemindSql remindSql;
+    private boolean onCreate = false;
     public static Schedule newInstance() {
 
         Schedule fragment = new Schedule();
@@ -71,17 +72,27 @@ public class Schedule extends Fragment {
         return fragment;
     }
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // retain this fragment
+        setRetainInstance(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.schedule, container, false);
-        remindSql = new RemindSql(getContext(), "date_alert.db", null, 1);
-        initRecy();
-        appBarLayout = rootView.findViewById(R.id.app_bar_layout);
-        initCal();
-        setHasOptionsMenu(true);
-        initTool();
-        initFab();
-        initList();
+        if(!onCreate) {
+            rootView = inflater.inflate(R.layout.schedule, container, false);
+            remindSql = new RemindSql(getContext(), "date_alert.db", null, 1);
+            initRecy();
+            appBarLayout = rootView.findViewById(R.id.app_bar_layout);
+            initCal();
+            setHasOptionsMenu(true);
+            initTool();
+            initFab();
+            initList();
+            onCreate = true;
+        }
         return rootView;
     }
     public void initList(){

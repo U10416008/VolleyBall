@@ -15,7 +15,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER"
-                    android:configChanges="keyboardHidden|orientation"/>
+                    android:configChanges="screenSize|keyboardHidden|orientation"/>
 
             </intent-filter>
         </activity>

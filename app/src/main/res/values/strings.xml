@@ -47,6 +47,19 @@
     <string name="third">第三局</string>
     <string name="forth">第四局</string>
     <string name="fifth">第五局</string>
+    <string name="yes">確定</string>
+    <string name="get">得分</string>
+    <string name="lose">失分</string>
+    <string name="all">全選</string>
+
+    <string name="startBall">發球</string>
+    <string name="middle">攔網</string>
+    <string name="touch">觸網</string>
+    <string name="over">越界</string>
+    <string name="be_attacked">對方攻擊得分</string>
+    <string name="over_att">越網擊球</string>
+
+
     <string-array name="location">
         <item>自由</item>
         <item>大砲</item>
