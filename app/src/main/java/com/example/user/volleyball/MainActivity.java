@@ -22,22 +22,27 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends Navigation_Activity {
+    public String teamName = "";
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar mToolbar;
     private Pager adapter;
     int ORIGINAL_SCREEN_ORIENTATION  = getRequestedOrientation();
-    private static final String TAG_WORKER_FRAGMENT = "Record";
-    Record mRecord ;
+    public ArrayList<String> list = new ArrayList<>();
     //public AppBarLayout abl;
     private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        if(savedInstanceState ==null) {
+            teamName = getString(R.string.record);
+        }else{
+            list = savedInstanceState.getStringArrayList("list");
+            teamName = savedInstanceState.getString("teamName");
+        }
         setUpToolBar();
         CurrentMenuItem = 0;
         //abl =(AppBarLayout)findViewById(R.id.abl) ;
@@ -45,6 +50,14 @@ public class MainActivity extends Navigation_Activity {
         initTool();
         home();
         //Adding onTabSelectedListener to swipe views
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle b)
+    {
+        b.putStringArrayList("list",list);
+        b.putString("teamName",teamName);
+        super.onSaveInstanceState(b);
+
     }
 
     public void home(){
@@ -105,6 +118,7 @@ public class MainActivity extends Navigation_Activity {
                     case 2:
                         mToolbar.setTitle(getString(R.string.record));
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
                         break;
                     case 3:
                         mToolbar.setTitle(getString(R.string.module));

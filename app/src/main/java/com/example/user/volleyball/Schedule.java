@@ -250,6 +250,7 @@ public class Schedule extends Fragment {
                                 cDS.setHour(hour);
                                 cDS.setNote(note.getText().toString());
                                 cDS.setSchedule(scheduleType);
+                                adapter.notifyDataSetChanged();
                                 remindSql.update(date.getText().toString(),scheduleType,
                                         min,hour,AM_PM,note.getText().toString());
                             }
@@ -274,6 +275,7 @@ public class Schedule extends Fragment {
         datelist.add(date);
         adapter.notifyDataSetChanged();
     }
+
     private void setCurrentDate(Date date) {
         setSubtitle(dateFormat.format(date));
         if (calendarView != null) {

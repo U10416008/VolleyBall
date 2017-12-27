@@ -165,7 +165,6 @@ public class Team extends Fragment {
                     attackMode = true;
                 }
                 if(selectMode) {
-                    showToast(getResources().getString(R.string.turn));
                     for (int i = 0; i < player.length; i++)
                         player[i].changeMode();
                 }

@@ -26,6 +26,10 @@
         android:id="@+id/tvteamName"
         />
     </LinearLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
     <EditText
         android:id="@+id/etplayername"
         android:inputType="textEmailAddress"
@@ -36,6 +40,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/playername_settings" />
+    </android.support.design.widget.TextInputLayout>
     <Spinner
         android:id="@+id/etlocation"
         android:inputType="textEmailAddress"
@@ -46,6 +51,10 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/player_location_settings" />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
     <EditText
         android:id="@+id/etheight"
         android:inputType="textEmailAddress"
@@ -56,6 +65,11 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/player_height_settings" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
     <EditText
         android:id="@+id/etmiss"
         android:inputType="textEmailAddress"
@@ -66,4 +80,5 @@
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
         android:hint="@string/player_missRate_settings" />
+    </android.support.design.widget.TextInputLayout>
 </LinearLayout>

@@ -30,8 +30,9 @@ public class MySql extends SQLiteOpenHelper {
                 "team VARCHAR, " +
                 "location VARCHAR, " +
                 "height REAL, " +
-                "miss REAL," +
-                "locationint REAL)");
+                "miss REAL, " +
+                "locationint REAL, " +
+                "total REAL)");
 
     }
     @Override
@@ -73,10 +74,28 @@ public class MySql extends SQLiteOpenHelper {
         db.close();
 
     }
+    public void addTotal(String name , String team,int miss){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + "main.person where team = ? and name = ?";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{team,name});
+        ContentValues values = new ContentValues();
+        double miss_rate = cursor.getDouble(5);
+        int total = cursor.getInt(7);
+        if(total != 0) {
+            int miss_total = (int)(total * miss_rate/100);
+
+            miss_total +=  miss;
+            total ++ ;
+            miss_rate = (double)miss_total/(double)total * 100.0;
+            values.put("total", total);
+            values.put("miss",miss_rate);
+        }
+        db.update("main.person", values, "team = ? and name = ? ", new String[]{team ,name});
+        db.close();
+    }
     public boolean update(String name , String team,int location , double height , double miss){
         String selectQuery = "SELECT * FROM " + "main.person";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
         ContentValues values = new ContentValues();
         values.put("name", name);
         values.put("team", team);
@@ -103,7 +122,7 @@ public class MySql extends SQLiteOpenHelper {
         values.put("height", height);
         values.put("miss", miss);
 
-        db.update("main.person", values, "name = ?", new String[]{name});
+        db.update("main.person", values, "team = ? and name = ? ", new String[]{team ,name});
 
         db.close();
 

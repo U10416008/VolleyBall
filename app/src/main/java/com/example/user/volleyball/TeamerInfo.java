@@ -69,7 +69,6 @@ public class TeamerInfo extends Fragment {
 
     @Override
     public void onStop() {
-        settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
         settings.edit()
                 .putInt(LAST_POSITION, spinner.getSelectedItemPosition())
                 .commit();
@@ -82,7 +81,7 @@ public class TeamerInfo extends Fragment {
         if(!onCreate) {
             rootView = inflater.inflate(R.layout.teamer_info, container, false);
             helper = new MySql(getContext(), "volleyball.db", null, 1);
-
+            settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
             initSpinner();
             initList();
             if (list.size() > 1) {
@@ -94,7 +93,7 @@ public class TeamerInfo extends Fragment {
     }
     public void initSpinner(){
         spinner = (Spinner)rootView.findViewById(R.id.spTeamName);
-        settings = getContext().getSharedPreferences("POSITION",getContext().MODE_PRIVATE);
+
         int position = settings.getInt(LAST_POSITION,0);
 
 
@@ -110,6 +109,9 @@ public class TeamerInfo extends Fragment {
                 android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setSelection(position);
+
+        ((MainActivity)getActivity()).teamName =  spinner.getSelectedItem().toString();
+        ((MainActivity)getActivity()).list = list;
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
@@ -129,11 +131,15 @@ public class TeamerInfo extends Fragment {
                                     EditText setTv = (EditText) mView.findViewById(R.id.etname);
 
                                     String team = setTv.getText().toString();
+
                                     if(!fileContain(team)) {
+
                                         list.add(list.size() - 1, team);
                                         save(team);
                                         adapter.notifyDataSetChanged();
                                         spinner.setSelection(list.size() - 2);
+                                        ((MainActivity)getActivity()).teamName = spinner.getSelectedItem().toString();
+                                        ((MainActivity)getActivity()).list = list;
                                         if(cursorAdapter != null)
                                             refresh();
                                     }
@@ -141,7 +147,9 @@ public class TeamerInfo extends Fragment {
                             })
                             .setNegativeButton(R.string.back, null).show();
                 }else{
+                    ((MainActivity)getActivity()).teamName = spinner.getSelectedItem().toString();
                     if(cursorAdapter == null){
+
                         createList();
                     }else {
                         refresh();

@@ -28,6 +28,10 @@
     <string name="update">更改</string>
     <string name="delete">刪除</string>
     <string name="please_select_mode">請選擇模式</string>
+    <string name="not_alloc">分配失敗，人數不足</string>
+    <string name="please_allocate_player">請分配隊員</string>
+    <string name="allocated">已分配完成</string>
+    <string name="player_used">隊員已用過</string>
     <string name="turn">往右輪</string>
     <string name="calendar">日曆</string>
     <string name="date">日期</string>
@@ -39,18 +43,24 @@
     <string name="complete">請選擇一個按鈕</string>
     <string name="open_navigation">打開NV</string>
     <string name="close_navigation">關閉</string>
+    <string name="team_my_fight">我方隊名</string>
+    <string name="team_fight">對方隊名</string>
     <string name="start">開始</string>
     <string name="three">三局</string>
+    <string name="board">局數</string>
     <string name="five">五局</string>
+    <string name="allocate_player">分配隊員</string>
     <string name="first">第一局</string>
     <string name="second">第二局</string>
     <string name="third">第三局</string>
     <string name="forth">第四局</string>
     <string name="fifth">第五局</string>
     <string name="yes">確定</string>
+    <string name="record_item">記錄項目選擇</string>
     <string name="get">得分</string>
     <string name="lose">失分</string>
     <string name="all">全選</string>
+    <string name="finish_record">結束紀錄</string>
 
     <string name="startBall">發球</string>
     <string name="middle">攔網</string>
