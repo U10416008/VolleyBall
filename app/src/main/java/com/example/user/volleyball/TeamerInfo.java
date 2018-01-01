@@ -267,7 +267,7 @@ public class TeamerInfo extends Fragment {
                 bw.write(team+"\n");
                 bw.close();
                 Log.d("Success", team);
-                Toast.makeText(getContext(), "Save" + team, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Save" + team, Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -55,32 +55,38 @@
         app:showAsAction="always" >
         <menu>
 
-        <item
-            android:id="@+id/board"
-            android:orderInCategory="100"
-            android:title="@string/board"
-            app:showAsAction="never" >
-        <menu>
-
             <item
-                android:id="@+id/three"
+                android:id="@+id/board"
                 android:orderInCategory="100"
-                android:title="@string/three"
-                app:showAsAction="always" />
-            <item
-                android:id="@+id/five"
-                android:orderInCategory="100"
-                android:title="@string/five"
-                app:showAsAction="always" />
+                android:title="@string/board"
+                app:showAsAction="never" >
+                <menu>
 
-        </menu>
-        </item>
+                    <item
+                        android:id="@+id/three"
+                        android:orderInCategory="100"
+                        android:title="@string/three"
+                        app:showAsAction="always" />
+                    <item
+                        android:id="@+id/five"
+                        android:orderInCategory="100"
+                        android:title="@string/five"
+                        app:showAsAction="always" />
+
+                </menu>
+            </item>
             <item
                 android:id="@+id/allocate_player"
                 android:orderInCategory="100"
                 android:title="@string/allocate_player"
                 app:showAsAction="never"/>
+            <item
+                android:id="@+id/restart"
+                android:orderInCategory="100"
+                android:title="@string/restart"
+                app:showAsAction="never"/>
         </menu>
+
     </item>
 
 </menu>

@@ -49,12 +49,15 @@
     <string name="three">三局</string>
     <string name="board">局數</string>
     <string name="five">五局</string>
+    <string name="restart">重新開始</string>
     <string name="allocate_player">分配隊員</string>
     <string name="first">第一局</string>
     <string name="second">第二局</string>
     <string name="third">第三局</string>
     <string name="forth">第四局</string>
     <string name="fifth">第五局</string>
+    <string name="finish">這局結束</string>
+    <string name="totalfinish">這場結束</string>
     <string name="yes">確定</string>
     <string name="record_item">記錄項目選擇</string>
     <string name="get">得分</string>
