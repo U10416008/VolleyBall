@@ -7,12 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +34,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -49,9 +44,7 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.security.SecureRandom;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Random;
 
 
 /**
@@ -113,6 +106,7 @@ public class Record extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    //save values in shared_pref
     @Override
     public void onStop() {
         Log.d("stop","Stop");
@@ -135,6 +129,7 @@ public class Record extends Fragment {
                 .commit();
         super.onStop();
     }
+    // get shared_pref values when fragment do onCreate
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,6 +175,7 @@ public class Record extends Fragment {
             setHasOptionsMenu(true);
             initTool();
             initImage();
+            //如果上次離開app時比賽未結束
             if(!finish) {
                 if (selectMode)
                     initSetting();
@@ -203,6 +199,8 @@ public class Record extends Fragment {
 
                 }
             }else{
+                //如果上次離開app時已經結束比賽
+
                 selectMode = false;
                 allocate = false;
                 check_all_get = false;
@@ -218,11 +216,13 @@ public class Record extends Fragment {
                 }
 
             }
+            //createView will be executed once
             onCreate = true;
         }
 
         return rootView;
     }
+    //初始化上次離開app時比分
     public void initSetting(){
         Log.d("setting","setting");
 
@@ -245,6 +245,7 @@ public class Record extends Fragment {
         }
         initRecordItem();
     }
+    //初始化上次離開app時的隊員分配
     public void initAllocate(){
         for(int i = 0 ; i < player.length ; i++){
             allocate = player[i].nameList();
@@ -270,16 +271,17 @@ public class Record extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
 
                 switch (item.getItemId()) {
-
+                    //三局
                     case R.id.three:
                         if (!selectMode) {
+
                             float screenWidth = rootView.findViewById(R.id.recordRL).getWidth();
                             float screenHeight = rootView.findViewById(R.id.recordRL).getHeight();
                             Log.d("X,Y", screenWidth + "," + screenHeight);
                             initXY(screenWidth, screenHeight);
                             run = 3;
                             for (int i = 0; i < player.length; i++) {
-
+                                //分配對員位置
                                 player[i].start_record();
                             }
                             for(int i = 0 ; i < run ; i++){
@@ -287,6 +289,7 @@ public class Record extends Fragment {
                             }
 
                             toolbar.setTitle(R.string.first);
+                            //選擇要記錄項目
                             initRecordItem();
                         }
 
@@ -310,6 +313,7 @@ public class Record extends Fragment {
                         break;
 
                     case R.id.recordturn :
+                        //位置輪轉
                         if(selectMode) {
                             showToast(getResources().getString(R.string.turn));
                             for (int i = 0; i < player.length; i++)
@@ -318,7 +322,10 @@ public class Record extends Fragment {
                         else
                             showToast(getResources().getString(R.string.please_select_mode));
                         break;
+
+                        //紀錄敵隊與選擇自己隊伍
                     case R.id.recordName:
+
                         final View nameView = getLayoutInflater().inflate(R.layout.set_team_name,null);
                         final EditText editName = (EditText)nameView.findViewById(R.id.etTeam);
                         final Spinner spinnerName = (Spinner)nameView.findViewById(R.id.spMyTeam);
@@ -374,6 +381,7 @@ public class Record extends Fragment {
                             }
                             }).show();
                         break;
+                        //分配隊員
                     case R.id.allocate_player:
                         if(selectMode&& !allocate){
                             for(int i = 0 ; i < player.length ; i++){
@@ -441,6 +449,7 @@ public class Record extends Fragment {
             showToast(getString(R.string.please_allocate_player));
         }
     }
+    //清除原本的紀錄項目
     private void clearLayoutView(ViewGroup v) {
         boolean doBreak = false;
         while (!doBreak) {
@@ -476,6 +485,7 @@ public class Record extends Fragment {
     public void showToast(String toast){
         Toast.makeText(getContext(), toast, Toast.LENGTH_SHORT).show();
     }
+    //對應image 與player
     public void initImage(){
         image[0] = (ImageView)rootView.findViewById(R.id.red3);
         image[1] = (ImageView)rootView.findViewById(R.id.black3);
@@ -519,6 +529,7 @@ public class Record extends Fragment {
             });
         }
     }
+    //紀錄得分率
     public void recordMiss(){
         int sumGet = 0;
         for(int lplayer = 0 ; lplayer < player.length;lplayer++){
@@ -533,7 +544,7 @@ public class Record extends Fragment {
             sumGet = 0;
         }
     }
-
+    //畫比賽結束後隊員表現的圓餅圖
     public void drawCanvas(int lplayer){
         final View pieChart = getLayoutInflater().inflate(R.layout.canvas,null);
         PieChart pie = (PieChart)pieChart.findViewById(R.id.piechart);
@@ -637,6 +648,7 @@ public class Record extends Fragment {
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
                         if(!check[index].isChecked()){
+                            //得分項目全選
                             if(check_all_get) {
                                 if (index < 4) {
                                     check[0].setChecked(false);
@@ -645,6 +657,7 @@ public class Record extends Fragment {
                                 }
 
                             }
+                            //失分項目全選
                             if(check_all_lose){
                                 if (index > 4) {
                                     check[4].setChecked(false);
@@ -667,6 +680,7 @@ public class Record extends Fragment {
                             for (int i = 0; i < check.length; i++) {
                                 if (check[i].isChecked()) {
                                     if (i != 0 && i != 4) {
+                                        //增加紀錄項目
                                         addItem(i, check[i].getText().toString(), i <= 3 ? GET : LOSE);
                                         time++;
                                     }
@@ -704,11 +718,12 @@ public class Record extends Fragment {
     }
     int viewId = 0;
     public void updateRate(final int i){
-
+        //判斷mview是否有parent
         if(mView.getParent()!=null){
             ViewGroup vGroup = (ViewGroup) mView.getParent();
             vGroup.removeView(mView);
         }
+        //可選擇隊員的選單
         final Spinner myPlayer = (Spinner)mView.findViewById(R.id.myTeamPlayer);
         ArrayAdapter adapter = new ArrayAdapter<String>(this.getContext(),
                 android.R.layout.simple_list_item_1, player[i].list);
@@ -720,6 +735,7 @@ public class Record extends Fragment {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                //如果要換的隊員不在場上
                 if(player[(i+3)%6].play != position ){
 
                     int sum = 0 ;
@@ -764,8 +780,10 @@ public class Record extends Fragment {
     }
     final int GET = 10;
     final int LOSE = 9;
+    //結束一局
     public void finishBoard(int i){
         player[i].writeScore(currentBoard);
+        //這場結束
         if(currentBoard < run && board[currentBoard].getFinish()) {
             for(int k = 0;k< player.length ; k++) {
                 if(k!=i)
@@ -783,12 +801,13 @@ public class Record extends Fragment {
             tvScore1.setText("0");
             tvScore2.setText("0");
             if(currentBoard >= run) {
+                //計算得分率
                 recordMiss();
                 finish = true;
             }
         }
     }
-
+    //新增紀錄項目
     public void addItem(final int item_number , final String item , int type){
         viewId++;
         LayoutInflater inflater = getLayoutInflater();
@@ -798,6 +817,7 @@ public class Record extends Fragment {
 
 
         mView.setId(viewId);
+        //動態新增
         if(type == GET)
             parentLayout.addView(mViewChild);
         else
@@ -826,11 +846,13 @@ public class Record extends Fragment {
         });
         tvItem.setText(item);
     }
+    //更新每個人的狀況
     public void renewPoint(){
         for(int i = 0 ; i <tvPointlist.size();i++){
             setPoint(tvPointlist.get(i),0,item[i]);
         }
     }
+    //紀錄雙方分數 紀錄每個人的狀況
     public void setPoint(TextView tvPoint,int type,int item_number){
         if(player[currentPlayer].recordScore[item_number] + type >=0) {
             if (currentBoard < run && !board[currentBoard].getFinish()) {
@@ -896,6 +918,7 @@ public class Record extends Fragment {
         }
         public boolean nameList(){
             String sloc = String.valueOf(loc);
+            //從資料庫中拉對應的資料出來當作可選隊員的名單
             select = "SELECT * FROM main.person WHERE team=? and locationint=?";
             cursor= helper.getReadableDatabase().rawQuery(
                     select,new String[]{team_name,sloc});
@@ -941,6 +964,7 @@ public class Record extends Fragment {
         public String getName(){
             return name;
         }
+        //換隊員
         public void turnPlayer(int player){
             name = list[player];
         }
@@ -957,12 +981,14 @@ public class Record extends Fragment {
             }
             start(valueX,valueY);
         }
+        //轉一個
         public void turn(){
             order = (++order)%6;
             float valueX = valueXarray[order];
             float valueY = valueYarray[order];
             start(valueX,valueY);
         }
+
         public void start_record(){
             location.setVisibility(View.VISIBLE);
             float valueX = valueXarray[order];
@@ -990,6 +1016,7 @@ public class Record extends Fragment {
             animSet.playTogether(animX,animY);
             animSet.start();
         }
+        //讀取每個人的分數檔
         public void readScore(int currentBoard){
             String line = "";
             try{
@@ -1015,6 +1042,7 @@ public class Record extends Fragment {
                 Toast.makeText(getContext(),"Fail",Toast.LENGTH_SHORT);
             }
         }
+        //寫入每個人的分數檔
         public void writeScore(int currentBoard){
             try{
 
@@ -1037,6 +1065,7 @@ public class Record extends Fragment {
         }
 
     }
+    //局
     class Board{
         int run = 0;
         String name1= "";
@@ -1077,6 +1106,7 @@ public class Record extends Fragment {
             name1Score = 0;
             name2Score = 0;
         }
+        //判斷這局是否結束
         public boolean getFinish(){
 
             return (name1Score >=25 || name2Score >= 25 )&& getScoreMinus() >=2? true : false;

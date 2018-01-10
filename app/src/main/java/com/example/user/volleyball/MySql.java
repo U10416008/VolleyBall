@@ -24,6 +24,7 @@ public class MySql extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        //create table if no such table exists
         sqLiteDatabase.execSQL("CREATE  TABLE main.person " +
                 "(_id INTEGER PRIMARY KEY  NOT NULL , " +
                 "name VARCHAR, " +
@@ -39,6 +40,7 @@ public class MySql extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+    //add teamer info
     public void add(String name , String team,int location , double height , double miss ) {
         SQLiteDatabase db = this.getWritableDatabase();
         String loc = "";
@@ -74,6 +76,7 @@ public class MySql extends SQLiteOpenHelper {
         db.close();
 
     }
+    //update the getRate
     public void addTotal(String name , String team,int miss,int total){
         SQLiteDatabase db = this.getWritableDatabase();
         String selectQuery = "SELECT * FROM main.person where name = ? and team = ?";
@@ -131,6 +134,7 @@ public class MySql extends SQLiteOpenHelper {
 
         return true;
     }
+    //search teamer
     public boolean contain(String name){
         String selectQuery = "SELECT * FROM " + "main.person";
         SQLiteDatabase db = this.getWritableDatabase();
@@ -147,6 +151,7 @@ public class MySql extends SQLiteOpenHelper {
 
         return false;
     }
+    //delete teamer
     public boolean delete(String name){
         if(contain(name)) {
             SQLiteDatabase db = this.getWritableDatabase();

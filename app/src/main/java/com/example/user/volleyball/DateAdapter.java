@@ -37,6 +37,7 @@ public class DateAdapter extends RecyclerView.Adapter implements View.OnClickLis
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        //put item from the date list
         Log.d("TAG", "onBindViewHolder, i: " + position + ", viewHolder: " + viewHolder);
         DateViewHolder holder = (DateViewHolder) viewHolder;
         holder.position = position;
@@ -64,7 +65,10 @@ public class DateAdapter extends RecyclerView.Adapter implements View.OnClickLis
         public TextView nameTv;
         public TextView ageTv;
         public int position;
+
+        //item view
         public DateViewHolder(View itemView) {
+
             super(itemView);
             nameTv = (TextView) itemView.findViewById(R.id.recycler_view_test_item_person_name_tv);
             ageTv = (TextView) itemView.findViewById(R.id.recycler_view_test_item_person_age_tv);

@@ -4,21 +4,14 @@ package com.example.user.volleyball;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.MenuItem;
-import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends Navigation_Activity {
@@ -30,7 +23,6 @@ public class MainActivity extends Navigation_Activity {
     int ORIGINAL_SCREEN_ORIENTATION  = getRequestedOrientation();
     public ArrayList<String> list = new ArrayList<>();
     //public AppBarLayout abl;
-    private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
 
     @Override
@@ -41,6 +33,7 @@ public class MainActivity extends Navigation_Activity {
         if(savedInstanceState ==null) {
             teamName = getString(R.string.record);
         }else{
+            //get list when onCreate do
             list = savedInstanceState.getStringArrayList("list");
             teamName = savedInstanceState.getString("teamName");
         }
@@ -55,6 +48,7 @@ public class MainActivity extends Navigation_Activity {
     @Override
     protected void onSaveInstanceState(Bundle b)
     {
+        //save the bundle when leave(change screen orientation)
         b.putStringArrayList("list",list);
         b.putString("teamName",teamName);
         super.onSaveInstanceState(b);
@@ -66,16 +60,16 @@ public class MainActivity extends Navigation_Activity {
         fr_list.add(Schedule.newInstance());
         fr_list.add(Record.newInstance());
         fr_list.add(Team.newInstance());
-        tabLayout = (TabLayout) findViewById(R.id.tabs); // get the reference of TabLayout
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        //Creating our pager adapter
-        ;
 
+        //pager adapter
         adapter = new Pager(getSupportFragmentManager(), 4);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
         setTab();
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        //keep fragment when change page
         viewPager.setOffscreenPageLimit(tabLayout.getTabCount());
     }
 
@@ -118,11 +112,13 @@ public class MainActivity extends Navigation_Activity {
                         break;
                     case 2:
                         mToolbar.setTitle(getString(R.string.record));
+                        //landscape
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
                         break;
                     case 3:
                         mToolbar.setTitle(getString(R.string.module));
+                        //portrait
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                         //abl.setExpanded(false,true);
                         break;
