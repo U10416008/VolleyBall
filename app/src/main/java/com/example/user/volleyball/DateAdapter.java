@@ -53,7 +53,6 @@ public class DateAdapter extends RecyclerView.Adapter implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (onRecyclerViewListener != null) {
-            //注意这里使用getTag方法获取position
             onRecyclerViewListener.onItemClick(v,(int)v.getTag());
 
         }

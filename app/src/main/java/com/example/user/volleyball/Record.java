@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -17,19 +21,24 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -39,7 +48,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.security.SecureRandom;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 /**
@@ -73,15 +85,25 @@ public class Record extends Fragment {
     boolean onCreate = false;
     boolean check_all_get = false;
     boolean check_all_lose = false;
+    boolean finish = false;
     public ArrayList<TextView> tvPointlist ;
     String team_name= "cs";
     String team_name2= "";
+    int sum[] = new int[6];
     int position = 0;
     int currentBoard = 0;
     Board board[]  = new Board[5];
     int run = 0;
     int item[] = new int[13];
-    int itemNum = 0;
+    int total[][] = new int[6][13];
+    private int itemNum = 0;
+    private int totalMiss=0;
+    private int totalGet=0;
+    private int winBoard = 0;
+    private int miss[] = new int[6];
+    private int get[] = new int[6];
+    private float height = 0;
+    private float width = 0;
     public static Record newInstance() {
 
         Record fragment = new Record();
@@ -93,7 +115,9 @@ public class Record extends Fragment {
     }
     @Override
     public void onStop() {
-
+        Log.d("stop","Stop");
+        if(selectMode)
+            finishBoard(currentPlayer);
         settings.edit()
                 .putInt("POSITION", position)
                 .putString("ENEMY",team_name2)
@@ -101,12 +125,13 @@ public class Record extends Fragment {
                 .putBoolean("allocate",allocate)
                 .putBoolean("get",check_all_get)
                 .putBoolean("lose",check_all_lose)
+                .putBoolean("finish",finish)
                 .putInt("score1",board[currentBoard] != null ?board[currentBoard].getName1Score():0)
                 .putInt("score2",board[currentBoard] != null ?board[currentBoard].getName2Score():0)
                 .putInt("currentBoard",currentBoard)
                 .putInt("run",run)
-                .putInt("height",rootView.findViewById(R.id.recordRL).getHeight())
-                .putInt("width",rootView.findViewById(R.id.recordRL).getWidth())
+                .putInt("height",(int)height)
+                .putInt("width",(int)width)
                 .commit();
         super.onStop();
     }
@@ -114,6 +139,8 @@ public class Record extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // retain this fragment
+        Log.d("create","create");
+
         settings = getContext().getSharedPreferences("TEAM_ATTACK",getContext().MODE_PRIVATE);
         position = settings.getInt("POSITION",0);
         selectMode = settings.getBoolean("selectMode",false);
@@ -123,6 +150,7 @@ public class Record extends Fragment {
         team_name2 = settings.getString("ENEMY","");
         check_all_get = settings.getBoolean("get",false);
         check_all_lose = settings.getBoolean("lose",false);
+        finish = settings.getBoolean("finish",false);
 
         setRetainInstance(true);
     }
@@ -152,18 +180,42 @@ public class Record extends Fragment {
             setHasOptionsMenu(true);
             initTool();
             initImage();
-            if(selectMode)
-                initSetting();
-            if(allocate) {
-                initAllocate();
+            if(!finish) {
+                if (selectMode)
+                    initSetting();
+                if (allocate) {
+                    initAllocate();
 
-                float screenHeight = settings.getInt("height",1344);
-                float screenWidth = settings.getInt("width",555);
-                Log.d("X,Y", screenWidth + "," + screenHeight);
-                initXY(screenWidth, screenHeight);
-                for (int i = 0; i < player.length; i++)
-                    player[i].start_record();
-                            //save height here and do whatever you want with it
+                    float screenHeight = settings.getInt("height", 1344);
+                    float screenWidth = settings.getInt("width", 555);
+                    Log.d("X,Y", screenWidth + "," + screenHeight);
+                    initXY(screenWidth, screenHeight);
+                    for (int i = 0; i < player.length; i++) {
+                        player[i].start_record();
+                        for(int j = 0 ; j < currentBoard ; j++){
+                            player[i].readScore(j);
+                            for(int k = 0 ; k < total[i].length ; k++){
+                                total[i][k] += player[i].recordScore[k];
+                            }
+                        }
+                    }
+
+
+                }
+            }else{
+                selectMode = false;
+                allocate = false;
+                check_all_get = false;
+                check_all_lose = false;
+                run = 0;
+
+                currentBoard = 0;
+                finish = false;
+                for (int i = 0; i < player.length; i++) {
+                    for (int j = 0; j< total[i].length; j++) {
+                        total[i][j] = 0;
+                    }
+                }
 
             }
             onCreate = true;
@@ -172,12 +224,16 @@ public class Record extends Fragment {
         return rootView;
     }
     public void initSetting(){
+        Log.d("setting","setting");
 
         for(int i = 0 ; i < run ; i++){
             board[i] = new Board(team_name,team_name2,i+1);
         }
         board[currentBoard].setName1Score(settings.getInt("score1",0));
+        tvScore1.setText(String.valueOf(board[currentBoard].getName1Score()));
         board[currentBoard].setName2Score(settings.getInt("score2",0));
+        tvScore2.setText(String.valueOf(board[currentBoard].getName2Score()));
+
         switch(currentBoard) {
             case 0:toolbar.setTitle(R.string.first);break;
             case 1:toolbar.setTitle(R.string.second);break;
@@ -222,8 +278,10 @@ public class Record extends Fragment {
                             Log.d("X,Y", screenWidth + "," + screenHeight);
                             initXY(screenWidth, screenHeight);
                             run = 3;
-                            for (int i = 0; i < player.length; i++)
+                            for (int i = 0; i < player.length; i++) {
+
                                 player[i].start_record();
+                            }
                             for(int i = 0 ; i < run ; i++){
                                 board[i] = new Board(team_name,team_name2,i+1);
                             }
@@ -234,7 +292,21 @@ public class Record extends Fragment {
 
                         break;
                     case R.id.five:
+                        if (!selectMode) {
+                            float screenWidth = rootView.findViewById(R.id.recordRL).getWidth();
+                            float screenHeight = rootView.findViewById(R.id.recordRL).getHeight();
+                            Log.d("X,Y", screenWidth + "," + screenHeight);
+                            initXY(screenWidth, screenHeight);
+                            run = 5;
+                            for (int i = 0; i < player.length; i++)
+                                player[i].start_record();
+                            for(int i = 0 ; i < run ; i++){
+                                board[i] = new Board(team_name,team_name2,i+1);
+                            }
 
+                            toolbar.setTitle(R.string.first);
+                            initRecordItem();
+                        }
                         break;
 
                     case R.id.recordturn :
@@ -305,7 +377,9 @@ public class Record extends Fragment {
                     case R.id.allocate_player:
                         if(selectMode&& !allocate){
                             for(int i = 0 ; i < player.length ; i++){
+
                                 allocate = player[i].nameList();
+                                player[i].restart(i);
                                 if(!allocate){
                                     showToast(getString(R.string.not_alloc));
                                     break;
@@ -323,33 +397,8 @@ public class Record extends Fragment {
                         }
                         break;
                     case R.id.restart:
-                        if(selectMode&& allocate){
-                            for(int i = 0 ; i < player.length ; i++){
-                                player[i].restart(i);
-                                image[i].setVisibility(View.INVISIBLE);
-                            }
-                            for(int i = 0 ; i < run ; i++){
-                                board[i].restart();
-                            }
-                            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(2))).getChildAt(0)));
-                            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(4))).getChildAt(0)));
-
-                            tvPointlist.clear();
-                            itemNum = 0;
-
-                            tvScore1.setText("0");
-                            tvScore2.setText("0");
-                            currentBoard = 0;
-                            selectMode = false;
-                            allocate = false;
-                            check_all_get = false;
-                            check_all_lose = false;
-                            showToast(getString(R.string.restart));
-                        }else if(!selectMode){
-                            showToast(getString(R.string.please_select_mode));
-                        }else{
-                            showToast(getString(R.string.allocated));
-                        }
+                        restart();
+                        break;
                 }
                 return false;
             }
@@ -357,7 +406,41 @@ public class Record extends Fragment {
 
 
     }
+    public void restart(){
+        if(selectMode&& allocate){
+            for(int j = 0 ;  j< player.length ; j++) {
+                for (int i = 0; i < total[j].length; i++) {
+                    total[j][i] = 0;
+                }
+            }
+            for(int i = 0 ; i < player.length ; i++){
+                image[i].setVisibility(View.INVISIBLE);
+            }
+            for(int i = 0 ; i < run ; i++){
+                board[i].restart();
+            }
+            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(2))).getChildAt(0)));
+            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(4))).getChildAt(0)));
 
+            tvPointlist.clear();
+            itemNum = 0;
+
+            tvScore1.setText("0");
+            tvScore2.setText("0");
+            currentBoard = 0;
+            selectMode = false;
+            allocate = false;
+            check_all_get = false;
+            check_all_lose = false;
+            finish = false;
+            showToast(getString(R.string.restart));
+
+        }else if(!selectMode){
+            showToast(getString(R.string.please_select_mode));
+        }else{
+            showToast(getString(R.string.please_allocate_player));
+        }
+    }
     private void clearLayoutView(ViewGroup v) {
         boolean doBreak = false;
         while (!doBreak) {
@@ -379,6 +462,8 @@ public class Record extends Fragment {
         }
     }
     public void initXY(float screenWidth,float screenHeight){
+        height = screenHeight;
+        width = screenWidth;
         valueXarray = new float[]
                 {screenWidth * 0.35f ,screenWidth * 0.4f,screenWidth * 0.35f,
                         screenWidth * 0.15f,screenWidth * 0.25f,screenWidth * 0.15f};
@@ -401,7 +486,7 @@ public class Record extends Fragment {
 
         for(int i = 0 ; i < player.length ; i++){
             final int i2 = i;
-            player[i] = new Player(image[i],i%3 + 1,i);
+            player[i] = new Player(image[i],i%3 + 1,i,i);
 
             image[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -413,8 +498,13 @@ public class Record extends Fragment {
 
                     }else{
                         currentPlayer = i2;
-                        updateRate(i2);
-                        renewPoint();
+                        if(!finish) {
+                            updateRate(currentPlayer);
+                            renewPoint();
+                        }else{
+                            drawCanvas(currentPlayer);
+
+                        }
 
 
                     }
@@ -429,8 +519,80 @@ public class Record extends Fragment {
             });
         }
     }
+    public void recordMiss(){
+        int sumGet = 0;
+        for(int lplayer = 0 ; lplayer < player.length;lplayer++){
+            for(int i = 5 ; i < total[lplayer].length ; i++){
+                sum[lplayer] += total[lplayer][i];
+                Log.d("total",total[lplayer][i]+"");
+            }
+            for(int i = 1 ; i < 4 ; i++) {
+                sumGet += total[lplayer][i];
+                helper.addTotal(player[lplayer].getName(), team_name, sumGet, totalGet - get[lplayer]);
+            }
+            sumGet = 0;
+        }
+    }
+
+    public void drawCanvas(int lplayer){
+        final View pieChart = getLayoutInflater().inflate(R.layout.canvas,null);
+        PieChart pie = (PieChart)pieChart.findViewById(R.id.piechart);
+        SecureRandom sr = new SecureRandom();
+        ArrayList<Entry> yvalues = new ArrayList<Entry>();
+        ArrayList<String> xVals = new ArrayList<String>();
+        ArrayList<Integer> colors = new ArrayList<>();
 
 
+        for(int i = 5 ; i < total[lplayer].length; i++){
+            if(total[lplayer][i] != 0 ) {
+                yvalues.add(new Entry((((float) total[lplayer][i] / (float) sum[lplayer]) * 100.f), i - 5));
+                Log.d("entry", ((float) total[lplayer][i] / (float) sum[lplayer]) * 100.f + "");
+                xVals.add(check[i].getText().toString());
+                colors.add(Color.rgb(sr.nextInt(256), sr.nextInt(256), sr.nextInt(256)));
+            }
+
+        }
+        PieDataSet dataSet = new PieDataSet(yvalues, " ");
+        dataSet.setColors(colors);
+        dataSet.setHighlightEnabled(true);
+        dataSet.setSliceSpace(3);
+        dataSet.setSelectionShift(5);
+        PieData data = new PieData(xVals, dataSet);
+
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(12f);
+        pie.setData(data);
+        pie.setDrawHoleEnabled(true);
+        pie.setTransparentCircleRadius(35f);
+        pie.setHoleRadius(25f);
+        pie.setDescription("");
+        Legend legend = pie.getLegend();
+        legend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        legend.setXEntrySpace(7);
+        legend.setYEntrySpace(3);
+        //legend.setTextSize(12f);
+        pie.setDescription("Total MissBalls : "+String.valueOf(sum[lplayer]));
+        pie.setDescriptionTextSize(16f);
+        new AlertDialog.Builder(getContext()).setView(pieChart).setTitle(player[lplayer].getName())
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int id) {
+
+
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+
+                        for(int i = 0; i < player.length; i++){
+                            for(int k = 0 ; k < currentBoard ; k++)
+                                player[i].writeScore(k);
+                        }
+                    }
+                }).show();
+
+    }
     public void initRecordItem(){
         final View chView = getLayoutInflater().inflate(R.layout.check_record_item,null);
         check[0] = (AppCompatCheckBox)chView.findViewById(R.id.all_get);
@@ -527,10 +689,10 @@ public class Record extends Fragment {
                 }
             }).show();
         }else{
-            check[0].setChecked(true);
-            check[4].setChecked(true);
+
 
             for (int i = 0; i < check.length; i++) {
+                check[i].setChecked(true);
                 if (check[i].isChecked()) {
                     if (i != 0 && i != 4) {
                         addItem(i, check[i].getText().toString(), i <= 3 ? GET : LOSE);
@@ -542,7 +704,7 @@ public class Record extends Fragment {
     }
     int viewId = 0;
     public void updateRate(final int i){
-        //addItem("",LOSE);
+
         if(mView.getParent()!=null){
             ViewGroup vGroup = (ViewGroup) mView.getParent();
             vGroup.removeView(mView);
@@ -559,11 +721,20 @@ public class Record extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
                 if(player[(i+3)%6].play != position ){
+
+                    int sum = 0 ;
+                    for(int k = 1 ; k < 4;k++){
+                        sum += player[i].recordScore[k];
+                    }
+
+                    helper.addTotal(player[i].getName(),team_name,sum,totalGet-get[i]);
+                    miss[i] = totalMiss;
+                    get[i] = totalGet;
                     myPlayer.setSelection(position);
                     player[i].play = position;
-
                     player[i].turnPlayer(position);
                     player[i].readScore(currentBoard);
+
                     renewPoint();
 
                 }else{
@@ -580,19 +751,6 @@ public class Record extends Fragment {
                 .setPositiveButton(R.string.finish_record, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int w) {
-                        player[i].writeScore(currentBoard);
-                        if(board[currentBoard].getFinish() && currentBoard <=5) {
-                            for(int k = 0;k< player.length ; k++) {
-                                if(k!=i)
-                                    player[i].writeScore(currentBoard);
-                                player[i].finishRecord();
-                            }
-                            currentBoard++;
-                            toolbar.setTitle(
-                                    currentBoard == 1 ? R.string.second:
-                                            currentBoard == 2 ?R.string.third:
-                                                    (run > 3 ?( currentBoard == 3  ?R.string.forth: R.string.fifth):R.string.totalfinish));
-                        }
                         dialogInterface.dismiss();
                     }
                 })
@@ -600,12 +758,37 @@ public class Record extends Fragment {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialogInterface) {
-
+                        finishBoard(i);
                     }
                 }).show();
     }
     final int GET = 10;
     final int LOSE = 9;
+    public void finishBoard(int i){
+        player[i].writeScore(currentBoard);
+        if(currentBoard < run && board[currentBoard].getFinish()) {
+            for(int k = 0;k< player.length ; k++) {
+                if(k!=i)
+                    player[k].writeScore(currentBoard);
+                player[k].finishRecord();
+                renewPoint();
+
+            }
+
+            currentBoard++;
+            toolbar.setTitle(
+                    currentBoard == 1 ? R.string.second:
+                            currentBoard == 2 ?R.string.third:
+                                    (run > 3 ?( currentBoard == 3  ?R.string.forth: R.string.fifth):R.string.totalfinish));
+            tvScore1.setText("0");
+            tvScore2.setText("0");
+            if(currentBoard >= run) {
+                recordMiss();
+                finish = true;
+            }
+        }
+    }
+
     public void addItem(final int item_number , final String item , int type){
         viewId++;
         LayoutInflater inflater = getLayoutInflater();
@@ -649,21 +832,22 @@ public class Record extends Fragment {
         }
     }
     public void setPoint(TextView tvPoint,int type,int item_number){
+        if(player[currentPlayer].recordScore[item_number] + type >=0) {
+            if (currentBoard < run && !board[currentBoard].getFinish()) {
+                if (item_number < 4) {
 
-        if( !board[currentBoard].getFinish() ) {
-            if (item_number < 4) {
-                board[currentBoard].setName1Score(board[currentBoard].getName1Score() + type);
-                tvScore1.setText(String.valueOf(board[currentBoard].getName1Score()));
+                    board[currentBoard].setName1Score(board[currentBoard].getName1Score() + type);
+                    tvScore1.setText(String.valueOf(board[currentBoard].getName1Score()));
+                    totalGet += type;
+                } else {
+                    board[currentBoard].setName2Score(board[currentBoard].getName2Score() + type);
+                    tvScore2.setText(String.valueOf(board[currentBoard].getName2Score()));
+                    totalMiss += type;
+                }
+
+                tvPoint.setText(String.valueOf(player[currentPlayer].recordScore[item_number] += type));
+
             }
-            else {
-                board[currentBoard].setName2Score(board[currentBoard].getName2Score() + type);
-                tvScore2.setText(String.valueOf(board[currentBoard].getName2Score()));
-
-            }
-
-            tvPoint.setText(String.valueOf(player[currentPlayer].recordScore[item_number] + type <0?
-                    0:(player[currentPlayer].recordScore[item_number] +=type)));
-
         }
         if(board[currentBoard].getFinish())
             showToast(getString(R.string.finish));
@@ -688,13 +872,15 @@ public class Record extends Fragment {
 
 
         public int play = 0;
+        private int player = 0;
         String select = "SELECT * FROM main.person WHERE team=? and locationint=?";
         Cursor cursor= helper.getReadableDatabase().rawQuery(select,new String[]{"cs","0"});
 
-        Player(ImageView location , int loc,int order){
+        Player(ImageView location , int loc,int order,int player){
             this.location = location;
             this.loc = loc;
             this.order = order;
+            this.player = player;
             for(int i = 0 ; i < recordScore.length;i++){
                 recordScore[i]=0;
             }
@@ -703,7 +889,9 @@ public class Record extends Fragment {
         public void finishRecord(){
 
             for(int i = 0 ; i < recordScore.length ; i++){
+                total[player][i] += recordScore[i];
                 recordScore[i] = 0;
+
             }
         }
         public boolean nameList(){
@@ -788,7 +976,7 @@ public class Record extends Fragment {
             float valueX = valueXarray[order];
             float valueY = valueYarray[order];
             start(valueX,valueY);
-            for(int j = 0 ; j <= currentBoard ; j++)
+            for(int j = 0 ; j <= 4 ; j++)
                 writeScore(j);
 
         }
@@ -855,6 +1043,7 @@ public class Record extends Fragment {
         String name2= "";
         int name1Score = 0;
         int name2Score = 0;
+        private int win = 0;
         Board(String name1,String name2,int run){
             this.name1 = name1;
             this.name2 = name2;
@@ -895,7 +1084,21 @@ public class Record extends Fragment {
         public int getScoreMinus(){
             return name1Score > name2Score? name1Score-name2Score : name2Score - name1Score;
         }
+        public int getWin(){
+            if(getFinish()){
+                if(name2Score > name1Score){
+                    win = 1;//lose
+                }else{
+                    win = 2;//win
+                }
+            }else{
+                win = 0;//still
+            }
+            return win;
+        }
+
 
     }
+
 
 }

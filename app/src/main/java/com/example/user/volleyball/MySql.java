@@ -74,23 +74,26 @@ public class MySql extends SQLiteOpenHelper {
         db.close();
 
     }
-    public void addTotal(String name , String team,int miss){
+    public void addTotal(String name , String team,int miss,int total){
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "SELECT * FROM " + "main.person where team = ? and name = ?";
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{team,name});
+        String selectQuery = "SELECT * FROM main.person where name = ? and team = ?";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{name,team});
         ContentValues values = new ContentValues();
+        cursor.moveToFirst();
         double miss_rate = cursor.getDouble(5);
-        int total = cursor.getInt(7);
+        int or_total = cursor.getInt(7);
         if(total != 0) {
-            int miss_total = (int)(total * miss_rate/100);
+            int miss_total = (int)(or_total * miss_rate/100);
 
             miss_total +=  miss;
-            total ++ ;
-            miss_rate = (double)miss_total/(double)total * 100.0;
-            values.put("total", total);
-            values.put("miss",miss_rate);
+            or_total += total ;
+            miss_rate = (double)miss_total/(double)or_total * 100.0;
+            values.put("total", 0);
+            values.put("miss",0);
+            db.update("main.person", values, "team = ? and name = ? ", new String[]{team ,name});
+            Log.d("miss",miss_rate+"");
         }
-        db.update("main.person", values, "team = ? and name = ? ", new String[]{team ,name});
         db.close();
     }
     public boolean update(String name , String team,int location , double height , double miss){

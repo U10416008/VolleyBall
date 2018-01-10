@@ -79,6 +79,6 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginBottom="4dp"
-        android:hint="@string/player_missRate_settings" />
+        android:hint="@string/player_getRate_settings" />
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

@@ -32,6 +32,7 @@ public class MainActivity extends Navigation_Activity {
     //public AppBarLayout abl;
     private int height = 900;
     ArrayList<Fragment> fr_list = new ArrayList<Fragment>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

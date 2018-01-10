@@ -17,6 +17,8 @@
     <string name="player_location_rase">舉球</string>
     <string name="player_height_settings">高度</string>
     <string name="player_missRate_settings">失誤率</string>
+    <string name="player_getRate_settings">得分率</string>
+
     <string name="volleyballInfo">隊伍資訊</string>
     <string name="schedule">排球記事</string>
     <string name="record">比賽紀錄</string>
