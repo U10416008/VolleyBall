@@ -10,7 +10,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:id="@+id/tvItem"
-            android:textSize="32dp"/>
+            android:textSize="24sp"/>
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:id="@+id/tvPoint"
-            android:textSize="32dp"/>
+            android:textSize="24sp"/>
         <ImageButton
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -271,7 +271,7 @@ public class TeamerInfo extends Fragment {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("Fail",team);
+            //Log.d("Fail",team);
             Toast.makeText(getContext(),"Fail",Toast.LENGTH_SHORT).show();
         }
     }
@@ -289,7 +289,7 @@ public class TeamerInfo extends Fragment {
             //Toast.makeText(getContext(),"Read",Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("Fail","");
+            //Log.d("Fail","");
             //Toast.makeText(getContext(),"Fail",Toast.LENGTH_SHORT);
         }
     }
@@ -313,7 +313,7 @@ public class TeamerInfo extends Fragment {
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d("Fail","");
+            //Log.d("Fail","");
             Toast.makeText(getContext(),"Fail",Toast.LENGTH_SHORT).show();
         }
         return false;

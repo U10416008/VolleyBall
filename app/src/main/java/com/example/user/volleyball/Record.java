@@ -114,6 +114,7 @@ public class Record extends Fragment {
             finishBoard(currentPlayer);
         settings.edit()
                 .putInt("POSITION", position)
+                .putString("MINE",team_name)
                 .putString("ENEMY",team_name2)
                 .putBoolean("selectMode",selectMode)
                 .putBoolean("allocate",allocate)
@@ -137,11 +138,13 @@ public class Record extends Fragment {
         Log.d("create","create");
 
         settings = getContext().getSharedPreferences("TEAM_ATTACK",getContext().MODE_PRIVATE);
+
         position = settings.getInt("POSITION",0);
         selectMode = settings.getBoolean("selectMode",false);
         allocate = settings.getBoolean("allocate",false);
         currentBoard = settings.getInt("currentBoard",0);
         run = settings.getInt("run",0);
+        team_name = settings.getString("MINE","cs");
         team_name2 = settings.getString("ENEMY","");
         check_all_get = settings.getBoolean("get",false);
         check_all_lose = settings.getBoolean("lose",false);
@@ -415,21 +418,26 @@ public class Record extends Fragment {
 
     }
     public void restart(){
-        if(selectMode&& allocate){
+
             for(int j = 0 ;  j< player.length ; j++) {
                 for (int i = 0; i < total[j].length; i++) {
                     total[j][i] = 0;
                 }
             }
             for(int i = 0 ; i < player.length ; i++){
-                image[i].setVisibility(View.INVISIBLE);
+                if(image[i]!= null)
+                    image[i].setVisibility(View.INVISIBLE);
             }
             for(int i = 0 ; i < run ; i++){
-                board[i].restart();
+                if(board[i]!=null)
+                    board[i].restart();
             }
-            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(2))).getChildAt(0)));
-            clearLayoutView((ViewGroup) (((ViewGroup) (((ViewGroup)mView).getChildAt(4))).getChildAt(0)));
-
+            if(mView!=null) {
+                clearLayoutView((ViewGroup)parentLayout);
+                clearLayoutView((ViewGroup)parentLayout2);
+                //clearLayoutView((ViewGroup)((ViewGroup) (((ViewGroup) (((ViewGroup) mView).getChildAt(1))).getChildAt(0))).getChildAt(1));
+                //clearLayoutView((ViewGroup) ((ViewGroup)((ViewGroup) (((ViewGroup) (((ViewGroup) mView).getChildAt(1))).getChildAt(1))).getChildAt(1)).getChildAt(0));
+            }
             tvPointlist.clear();
             itemNum = 0;
 
@@ -443,11 +451,7 @@ public class Record extends Fragment {
             finish = false;
             showToast(getString(R.string.restart));
 
-        }else if(!selectMode){
-            showToast(getString(R.string.please_select_mode));
-        }else{
-            showToast(getString(R.string.please_allocate_player));
-        }
+
     }
     //清除原本的紀錄項目
     private void clearLayoutView(ViewGroup v) {
@@ -794,6 +798,8 @@ public class Record extends Fragment {
             }
 
             currentBoard++;
+            if(currentBoard <run)
+                showToast(getString(R.string.finish));
             toolbar.setTitle(
                     currentBoard == 1 ? R.string.second:
                             currentBoard == 2 ?R.string.third:
@@ -871,8 +877,7 @@ public class Record extends Fragment {
 
             }
         }
-        if(board[currentBoard].getFinish())
-            showToast(getString(R.string.finish));
+
 
 
     }
